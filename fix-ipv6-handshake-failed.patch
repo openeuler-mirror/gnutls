@@ -1,0 +1,52 @@
+From 93a6a9a753c541e04875648cf5671e422e4621df Mon Sep 17 00:00:00 2001
+From: lvying <lvying6@huawei.com>
+Date: Sat, 8 Jun 2019 22:36:10 -0400
+Subject: [PATCH] fix ipv6 handshake failed
+
+reason: fix ipv6 handshake failed
+
+Signed-off-by: lvying <lvying6@huawei.com>
+---
+ lib/ext/server_name.c      |   4 +++-
+ lib/str.h                  |  10 ++++++++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/lib/ext/server_name.c b/lib/ext/server_name.c
+index 259dc99..f61c1f2 100644
+--- a/lib/ext/server_name.c
++++ b/lib/ext/server_name.c
+@@ -105,7 +105,9 @@ _gnutls_server_name_recv_params(gnutls_session_t session,
+ 			DECR_LEN(data_size, len);
+ 
+ 			if (type == 0) { /* NAME_DNS */
+-				if (!_gnutls_dnsname_is_valid((char*)p, len)) {
++                                _gnutls_debug_log("HSK[%p]: recieve server name: '%.*s'\n", session, len, p);
++                                /* fix ipv6 format server name invaild problem */
++                                if (!_gnutls_dnsname_is_valid((char*)p, len) && !_gnutls_ipv6_is_valid((char*)p, len)) {
+ 					_gnutls_handshake_log
+ 					    ("HSK[%p]: Server name is not acceptable: '%.*s'\n",
+ 					     session, (int) len, p);
+diff --git a/lib/str.h b/lib/str.h
+index 9f0e7d6..e0bca4b 100644
+--- a/lib/str.h
++++ b/lib/str.h
+@@ -60,6 +60,16 @@ inline static unsigned _gnutls_str_is_print(const char *str, unsigned size)
+ 	return 1;
+ }
+ 
++inline static unsigned _gnutls_ipv6_is_valid(const char *str, unsigned size)
++{
++        unsigned i;
++        for (i=0;i<size;i++) {
++                if (!(c_isalnum(str[i]) || str[i] == ':' || str[i] == '%' || str[i] == '.'))
++                        return 0;
++        }
++        return 1;
++}
++
+ inline static unsigned _gnutls_dnsname_is_valid(const char *str, unsigned size)
+ {
+ 	unsigned i;
+-- 
+2.19.1
+
