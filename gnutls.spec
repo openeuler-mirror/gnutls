@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.6.9
-Release: 2
+Release: 3
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -20,7 +20,7 @@ BuildRequires: libtasn1-devel, libtool, automake, autoconf, texinfo
 BuildRequires: autogen-libopts-devel, autogen, gperf, gnupg2, gcc, gcc-c++
 BuildRequires: nettle-devel, trousers-devel, libidn2-devel
 BuildRequires: libunistring-devel, net-tools, softhsm
-BuildRequires: datefudge, p11-kit-trust, ca-certificates
+BuildRequires: p11-kit-trust, ca-certificates
 %if %{with fips}
 BuildRequires: fipscheck
 %endif
@@ -199,6 +199,12 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Thu Oct 24 2019 openEuler Buildteam <buildteam@openeuler.org> - 3.6.9-3
+- Type:bugfix
+- Id:NA
+- SUG:NA
+- DESC:remove the datefudge from buildRequires
+
 * Tue Sep 24 2019 openEuler Buildteam <buildteam@openeuler.org> - 3.6.9-2
 - Require adjust
 
