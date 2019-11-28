@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.6.9
-Release: 3
+Release: 4
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -167,16 +167,13 @@ make check %{?_smp_mflags}
 %{_libdir}/libgnutls.so.30*
 %{_libdir}/libgnutlsxx.so.*
 %if %{with fips}
-%{_libdir}/.libgnutls.so.30*.hmac
+%{_libdir}/.libgnutls.so.*.hmac
 %endif
 
 %files devel
 %defattr(-,root,root)
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/libgnutls*.so
-%if %{with fips}
-%{_libdir}/.libgnutls.so.*.hmac
-%endif
 %{_includedir}/*
 
 %files help
@@ -199,6 +196,12 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Tue Nov 5 2019 openEuler Buildteam <buildteam@openeuler.org> - 3.6.9-4
+- Type:bugfix
+- Id:NA
+- SUG:NA
+- DESC:delete redundant .hmac files in devel package
+
 * Thu Oct 24 2019 openEuler Buildteam <buildteam@openeuler.org> - 3.6.9-3
 - Type:bugfix
 - Id:NA
