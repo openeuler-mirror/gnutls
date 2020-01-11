@@ -1,14 +1,12 @@
 Name: gnutls
 Version: 3.6.9
-Release: 4
+Release: 5
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
 URL: https://www.gnutls.org/
 Source0: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz
 Source1: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz.sig
-Patch1: gnutls-3.2.7-rpath.patch
-Patch2: gnutls-3.6.7-no-now-guile.patch
 Patch9000: fix-ipv6-handshake-failed.patch
 
 %bcond_without dane
@@ -196,6 +194,12 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Fri Jan 10 2020 openEuler Buildteam <buildteam@openeuler.org> - 3.6.9-5
+- Type:bugfix
+- Id:NA
+- SUG:NA
+- DESC:clean code
+
 * Tue Nov 5 2019 openEuler Buildteam <buildteam@openeuler.org> - 3.6.9-4
 - Type:bugfix
 - Id:NA
