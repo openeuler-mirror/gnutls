@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.6.9
-Release: 5.h1
+Release: 6
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -195,7 +195,7 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
-* Wed Apr 22 2020 Anakin Zhang <nbztx@126.com> - 3.6.9-5.h1
+* Wed Apr 22 2020 Anakin Zhang <benjamin93@163.com> - 3.6.9-6
 - fix CVE-2020-11501
 
 * Fri Jan 10 2020 openEuler Buildteam <buildteam@openeuler.org> - 3.6.9-5
