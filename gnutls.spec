@@ -1,6 +1,6 @@
 Name: gnutls
-Version: 3.6.9
-Release: 7
+Version: 3.6.14
+Release: 1
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -8,11 +8,6 @@ URL: https://www.gnutls.org/
 Source0: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz
 Source1: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz.sig
 Patch0: fix-ipv6-handshake-failed.patch
-Patch1: fix-CVE-2020-11501-zeroed-random.patch
-Patch2: backport-x509-drop-endless-loop-in-print_extensions.patch
-Patch3: backport-x509-drop-endless-loop-in-print_crl.patch
-Patch4: backport-x509-drop-endless-loop-in-print_crq.patch
-Patch5: backport-do-not-go-try-calculating-pdkdf2-with-0-iterations.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -199,6 +194,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Mon Jul 27 2020 wangchen <wangchen137@huawei.com> - 3.6.14-1
+- update to 3.6.14
+
 * Mon Jun 8 2020 Anakin Zhang <benjamin93@163.com> - 3.6.9-7
 - fix x509 drop endless loop and pkcs12 iterations
 
