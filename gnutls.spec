@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.6.14
-Release: 2
+Release: 3
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -34,8 +34,8 @@ Requires: crypto-policies, p11-kit-trust, libtasn1, nettle
 Recommends: trousers >= 0.3.11.2
 
 Provides: bundled(gnulib) = 20130424
-Provides: gnutls-utils gnutls-c++ gnutls-dane
-Obsoletes:gnutls-utils gnutls-c++ gnutls-dane
+Provides: gnutls-c++ gnutls-dane
+Obsoletes:gnutls-c++ gnutls-dane
 
 %description
 GnuTLS is a secure communications library implementing the SSL, TLS and DTLS
@@ -55,6 +55,19 @@ Requires: pkgconf
 
 %description devel
 This package contains files needed for developing applications with %{name}.
+
+%package utils
+License: GPLv3+
+Summary: Command line tools for TLS protocol
+Requires: %{name}%{?_isa} = %{version}-%{release}
+Provides: gnutls-utils
+Obsoletes:gnutls-utils
+
+%description utils
+GnuTLS is a secure communications library implementing the SSL,TLS and DTLS protocols and technologies around them. 
+It provides a simple C language application programming interface(API) to access the secure communications protocols 
+as well as APIs to parse and write X.509, PKCS #12, OpenPGP and other required structures.
+This package contains command line TLS clinet and server and certificate manipulation tools.
 
 %package_help
 
@@ -152,15 +165,7 @@ make check %{?_smp_mflags}
 %defattr(-,root,root)
 %doc README.md AUTHORS
 %license LICENSE doc/COPYING doc/COPYING.LESSER
-%{_bindir}/certtool
-%{_bindir}/tpmtool
-%{_bindir}/ocsptool
-%{_bindir}/psktool
-%{_bindir}/p11tool
-%{_bindir}/srptool
-%{_bindir}/gnutls*
 %if %{with dane}
-%{_bindir}/danetool
 %{_libdir}/libgnutls-dane.so.*
 %endif
 %{_libdir}/libgnutls.so.30*
@@ -174,6 +179,18 @@ make check %{?_smp_mflags}
 %{_libdir}/pkgconfig/*.pc
 %{_libdir}/libgnutls*.so
 %{_includedir}/*
+
+%files utils
+%{_bindir}/certtool
+%{_bindir}/tpmtool
+%{_bindir}/ocsptool
+%{_bindir}/psktool
+%{_bindir}/p11tool
+%{_bindir}/srptool
+%{_bindir}/gnutls*
+%if %{with dane}
+%{_bindir}/danetool
+%endif
 
 %files help
 %defattr(-,root,root)
@@ -195,6 +212,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Fri Oct 16 2020 zhangxingliang <zhangxingliang3@huawei.com> - 3.6.14-3
+- Detach the sub package gnutls-utils from gnutls
+
 * Fri Sep 4 2020 yangzhuangzhuang <yangzhuangzhuang1@huawei.com> - 3.6.14-2
 - reject no_renegotiation alert if handshake is incomplete
 
