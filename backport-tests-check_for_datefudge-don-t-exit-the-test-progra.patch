@@ -1,0 +1,639 @@
+From c06de1e19b5446bae5cb8e982746a547dd4061b4 Mon Sep 17 00:00:00 2001
+From: Daiki Ueno <ueno@gnu.org>
+Date: Tue, 9 Jun 2020 10:41:18 +0200
+Subject: [PATCH] tests: check_for_datefudge: don't exit the test programs
+
+This makes check_for_datefudge not to immediately exit the program,
+but to return non-zero to allow the tests by themselves to control the
+behavior when "datefudge" is not found.
+
+Signed-off-by: Daiki Ueno <ueno@gnu.org>
+
+Conflict:delete the modification of nonexistent files
+---
+ tests/cert-reencoding.sh                     | 2 +-
+ tests/cert-tests/alt-chain                   | 2 +-
+ tests/cert-tests/cert-critical               | 2 +-
+ tests/cert-tests/cert-non-digits-time        | 2 +-
+ tests/cert-tests/certtool                    | 2 +-
+ tests/cert-tests/certtool-eddsa              | 2 +-
+ tests/cert-tests/certtool-rsa-pss            | 2 +-
+ tests/cert-tests/certtool-verify-profiles    | 2 +-
+ tests/cert-tests/crl                         | 2 +-
+ tests/cert-tests/crq                         | 2 +-
+ tests/cert-tests/inhibit-anypolicy           | 2 +-
+ tests/cert-tests/krb5-test                   | 2 +-
+ tests/cert-tests/md5-test                    | 2 +-
+ tests/cert-tests/name-constraints            | 2 +-
+ tests/cert-tests/othername-test              | 2 +-
+ tests/cert-tests/pkcs1-pad                   | 2 +-
+ tests/cert-tests/pkcs7                       | 2 +-
+ tests/cert-tests/pkcs7-cat                   | 2 +-
+ tests/cert-tests/pkcs7-constraints           | 2 +-
+ tests/cert-tests/pkcs7-constraints2          | 2 +-
+ tests/cert-tests/pkcs7-eddsa                 | 2 +-
+ tests/cert-tests/pkcs7-list-sign             | 2 +-
+ tests/cert-tests/rsa-pss-pad                 | 2 +-
+ tests/cert-tests/sha3-test                   | 2 +-
+ tests/cert-tests/smime                       | 2 +-
+ tests/cert-tests/template-exts-test          | 2 +-
+ tests/cert-tests/template-test               | 2 +-
+ tests/cert-tests/tlsfeature-test             | 2 +-
+ tests/certtool-pkcs11.sh                     | 2 +-
+ tests/gnutls-cli-debug.sh                    | 2 +-
+ tests/gnutls-cli-invalid-crl.sh              | 2 +-
+ tests/gnutls-cli-self-signed.sh              | 2 +-
+ tests/ocsp-tests/ocsp-load-chain             | 2 +-
+ tests/ocsp-tests/ocsp-must-staple-connection | 2 +-
+ tests/ocsp-tests/ocsp-test                   | 2 +-
+ tests/ocsp-tests/ocsp-tls-connection         | 2 +-
+ tests/pkcs7-cat.sh                           | 2 +-
+ tests/rsa-md5-collision/rsa-md5-collision.sh | 2 +-
+ tests/scripts/common.sh                      | 7 ++++++-
+ tests/server-multi-keys.sh                   | 2 +-
+ tests/server-weak-keys.sh                    | 2 +-
+ tests/system-override-profiles.sh            | 2 +-
+ tests/system-override-tls.sh                 | 2 +-
+ tests/tls13/prf-early.sh                     | 2 +-
+ 48 files changed, 53 insertions(+), 48 deletions(-)
+
+diff --git a/tests/cert-reencoding.sh b/tests/cert-reencoding.sh
+index aadd6fd1b..240d33677 100755
+--- a/tests/cert-reencoding.sh
++++ b/tests/cert-reencoding.sh
+@@ -57,7 +57,7 @@ export TZ="UTC"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ eval "${GETPORT}"
+ # Port for gnutls-serv
+diff --git a/tests/cert-tests/alt-chain b/tests/cert-tests/alt-chain
+index b715416cc..a2261b380 100755
+--- a/tests/cert-tests/alt-chain
++++ b/tests/cert-tests/alt-chain
+@@ -36,7 +36,7 @@ OUTFILE=out-pkcs7.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ OLD_CA_FILE="${srcdir}/data/alt-chain-old-ca.pem"
+ NEW_CA_FILE="${srcdir}/data/alt-chain-new-ca.pem"
+diff --git a/tests/cert-tests/cert-critical b/tests/cert-tests/cert-critical
+index 74f335cb8..f923b29fa 100755
+--- a/tests/cert-tests/cert-critical
++++ b/tests/cert-tests/cert-critical
+@@ -36,7 +36,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ datefudge "2017-2-28" \
+ ${VALGRIND} "${CERTTOOL}" --verify-chain --infile ${srcdir}/data/chain-with-critical-on-root.pem
+diff --git a/tests/cert-tests/cert-non-digits-time b/tests/cert-tests/cert-non-digits-time
+index 28880b87a..9c25c396d 100755
+--- a/tests/cert-tests/cert-non-digits-time
++++ b/tests/cert-tests/cert-non-digits-time
+@@ -32,7 +32,7 @@ if ! test -z "${VALGRIND}"; then
+     VALGRIND="${LIBTOOL:-libtool} --mode=execute ${VALGRIND}"
+ fi
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # Check whether certificates with non-digits time fields are accepted
+ datefudge -s "2019-12-19" \
+diff --git a/tests/cert-tests/certtool b/tests/cert-tests/certtool
+index 3494aaacb..0fd29beea 100755
+--- a/tests/cert-tests/certtool
++++ b/tests/cert-tests/certtool
+@@ -171,7 +171,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ cat "${srcdir}/../certs/cert-ecc256.pem" "${srcdir}/../certs/ca-cert-ecc.pem"|datefudge "2012-11-22" \
+ ${VALGRIND} "${CERTTOOL}" --verify-chain
+diff --git a/tests/cert-tests/certtool-eddsa b/tests/cert-tests/certtool-eddsa
+index c097fbf6c..7e0782250 100755
+--- a/tests/cert-tests/certtool-eddsa
++++ b/tests/cert-tests/certtool-eddsa
+@@ -124,7 +124,7 @@ rm -f "${TMPFILE}" "${TMPFILE2}"
+ rm -f "${KEYFILE}"
+ 
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # Test certificate chain using Ed25519
+ datefudge "2017-7-6" \
+diff --git a/tests/cert-tests/certtool-rsa-pss b/tests/cert-tests/certtool-rsa-pss
+index aed79ff2e..654bf3486 100755
+--- a/tests/cert-tests/certtool-rsa-pss
++++ b/tests/cert-tests/certtool-rsa-pss
+@@ -210,7 +210,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ datefudge "2012-11-22" \
+ ${VALGRIND} "${CERTTOOL}" --verify --load-ca-certificate "${srcdir}/data/cert-rsa-pss.pem" --infile "${srcdir}/data/cert-rsa-pss.pem"
+diff --git a/tests/cert-tests/certtool-verify-profiles b/tests/cert-tests/certtool-verify-profiles
+index a7ebd711e..a4d738627 100755
+--- a/tests/cert-tests/certtool-verify-profiles
++++ b/tests/cert-tests/certtool-verify-profiles
+@@ -36,7 +36,7 @@ OUTFILE=out-pkcs7.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ echo "Checking chain with insecure leaf"
+ datefudge -s "2019-12-19" \
+diff --git a/tests/cert-tests/crl b/tests/cert-tests/crl
+index 62b320b2b..f4f97d757 100755
+--- a/tests/cert-tests/crl
++++ b/tests/cert-tests/crl
+@@ -171,7 +171,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ datefudge -s "2020-01-20 10:00:00" ${VALGRIND} \
+ 	"${CERTTOOL}" --generate-crl --load-ca-privkey "${srcdir}/data/template-test.key" \
+diff --git a/tests/cert-tests/crq b/tests/cert-tests/crq
+index 89099cfc0..1d64dee27 100755
+--- a/tests/cert-tests/crq
++++ b/tests/cert-tests/crq
+@@ -40,7 +40,7 @@ OUTFILE2=out2.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ ${VALGRIND} "${CERTTOOL}" --inder --crq-info --infile "${srcdir}/data/csr-invalid.der" >"${OUTFILE}" 2>&1
+ rc=$?
+diff --git a/tests/cert-tests/inhibit-anypolicy b/tests/cert-tests/inhibit-anypolicy
+index 7e82a2001..ba5e1100f 100755
+--- a/tests/cert-tests/inhibit-anypolicy
++++ b/tests/cert-tests/inhibit-anypolicy
+@@ -36,7 +36,7 @@ SUBCAFILE=inhibit-subca.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ datefudge -s "2017-04-22" \
+ 	"${CERTTOOL}" --generate-self-signed \
+diff --git a/tests/cert-tests/krb5-test b/tests/cert-tests/krb5-test
+index 3eca7d7e3..a6e092cc9 100755
+--- a/tests/cert-tests/krb5-test
++++ b/tests/cert-tests/krb5-test
+@@ -34,7 +34,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ if ! test -z "${VALGRIND}"; then
+ 	ORIG_VALGRIND=${VALGRIND}
+diff --git a/tests/cert-tests/md5-test b/tests/cert-tests/md5-test
+index a9635cc1d..15d6280b1 100755
+--- a/tests/cert-tests/md5-test
++++ b/tests/cert-tests/md5-test
+@@ -34,7 +34,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # Test MD5 signatures
+ 
+diff --git a/tests/cert-tests/name-constraints b/tests/cert-tests/name-constraints
+index f23462117..3b2370d49 100755
+--- a/tests/cert-tests/name-constraints
++++ b/tests/cert-tests/name-constraints
+@@ -36,7 +36,7 @@ TMPFILE=constraints.$$.pem.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ datefudge -s "2016-04-22" \
+ 	${VALGRIND} "${CERTTOOL}" --verify-allow-broken -e --infile "${srcdir}/data/name-constraints-ip.pem"
+diff --git a/tests/cert-tests/othername-test b/tests/cert-tests/othername-test
+index 38032fee1..00f93b22d 100755
+--- a/tests/cert-tests/othername-test
++++ b/tests/cert-tests/othername-test
+@@ -33,7 +33,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # Note that in rare cases this test may fail because the
+ # time set using datefudge could have changed since the generation
+diff --git a/tests/cert-tests/pkcs1-pad b/tests/cert-tests/pkcs1-pad
+index 33663a6a0..c75ab9e09 100755
+--- a/tests/cert-tests/pkcs1-pad
++++ b/tests/cert-tests/pkcs1-pad
+@@ -34,7 +34,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ TMPFILE1=pkcs1-pad.$$.tmp
+ TMPFILE2=pkcs1-pad-2.$$.tmp
+diff --git a/tests/cert-tests/pkcs7 b/tests/cert-tests/pkcs7
+index 35d438107..23db9e017 100755
+--- a/tests/cert-tests/pkcs7
++++ b/tests/cert-tests/pkcs7
+@@ -38,7 +38,7 @@ TMPFILE=tmp-pkcs7.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ if test "${ENABLE_GOST}" = "1" && test "${GNUTLS_FORCE_FIPS_MODE}" != "1"
+ then
+diff --git a/tests/cert-tests/pkcs7-cat b/tests/cert-tests/pkcs7-cat
+index 0f5b82df1..654339743 100755
+--- a/tests/cert-tests/pkcs7-cat
++++ b/tests/cert-tests/pkcs7-cat
+@@ -36,7 +36,7 @@ OUTFILE=out-pkcs7.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ datefudge -s "2016-10-1" \
+ ${VALGRIND} "${CERTTOOL}" --verify-allow-broken --p7-verify --inder --infile "${srcdir}/data/pkcs7-cat.p7" --load-ca-certificate "${srcdir}/data/pkcs7-cat-ca.pem" 
+ rc=$?
+diff --git a/tests/cert-tests/pkcs7-constraints b/tests/cert-tests/pkcs7-constraints
+index 8e5b5345d..6964d26f0 100755
+--- a/tests/cert-tests/pkcs7-constraints
++++ b/tests/cert-tests/pkcs7-constraints
+@@ -36,7 +36,7 @@ OUTFILE=out-pkcs7.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ 
+ FILE="signing"
+diff --git a/tests/cert-tests/pkcs7-constraints2 b/tests/cert-tests/pkcs7-constraints2
+index 389071e27..7d1816a33 100755
+--- a/tests/cert-tests/pkcs7-constraints2
++++ b/tests/cert-tests/pkcs7-constraints2
+@@ -36,7 +36,7 @@ OUTFILE=out-pkcs7.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ 
+ FILE="signing"
+diff --git a/tests/cert-tests/pkcs7-eddsa b/tests/cert-tests/pkcs7-eddsa
+index 1fd767bd7..6f235c512 100755
+--- a/tests/cert-tests/pkcs7-eddsa
++++ b/tests/cert-tests/pkcs7-eddsa
+@@ -36,7 +36,7 @@ OUTFILE2=out2-pkcs7.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ KEY="${srcdir}/../certs/ed25519.pem"
+ CERT="${srcdir}/../certs/cert-ed25519.pem"
+diff --git a/tests/cert-tests/pkcs7-list-sign b/tests/cert-tests/pkcs7-list-sign
+index 1c4e930e5..5ca04d800 100755
+--- a/tests/cert-tests/pkcs7-list-sign
++++ b/tests/cert-tests/pkcs7-list-sign
+@@ -37,7 +37,7 @@ OUTFILE2=out2-pkcs7.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ # Test signing
+ FILE="signing-with-cert-list"
+ ${VALGRIND} "${CERTTOOL}" --p7-sign --load-certificate "${srcdir}/data/pkcs7-chain.pem" --load-privkey "${srcdir}/data/pkcs7-chain-endcert-key.pem" --infile "${srcdir}/data/pkcs7-detached.txt" >"${OUTFILE}"
+diff --git a/tests/cert-tests/rsa-pss-pad b/tests/cert-tests/rsa-pss-pad
+index d9a05e4e0..2c87c750f 100755
+--- a/tests/cert-tests/rsa-pss-pad
++++ b/tests/cert-tests/rsa-pss-pad
+@@ -33,7 +33,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # Note that in rare cases this test may fail because the
+ # time set using datefudge could have changed since the generation
+diff --git a/tests/cert-tests/sha3-test b/tests/cert-tests/sha3-test
+index dc3cf8f6b..a4300672c 100755
+--- a/tests/cert-tests/sha3-test
++++ b/tests/cert-tests/sha3-test
+@@ -33,7 +33,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # Note that in rare cases this test may fail because the
+ # time set using datefudge could have changed since the generation
+diff --git a/tests/cert-tests/smime b/tests/cert-tests/smime
+index dd5514f68..f5e68401c 100755
+--- a/tests/cert-tests/smime
++++ b/tests/cert-tests/smime
+@@ -36,7 +36,7 @@ OUTFILE=out-pkcs7.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # test the --smime-to-p7 functionality
+ ${VAGRLIND} "${CERTTOOL}" --smime-to-p7 --infile "${srcdir}/data/pkcs7.smime" --outfile ${OUTFILE}
+diff --git a/tests/cert-tests/template-exts-test b/tests/cert-tests/template-exts-test
+index 32e90f91e..276ba2f79 100755
+--- a/tests/cert-tests/template-exts-test
++++ b/tests/cert-tests/template-exts-test
+@@ -33,7 +33,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ datefudge -s "2007-04-22" \
+ 	"${CERTTOOL}" --generate-self-signed \
+diff --git a/tests/cert-tests/template-test b/tests/cert-tests/template-test
+index f7ebefb66..091021315 100755
+--- a/tests/cert-tests/template-test
++++ b/tests/cert-tests/template-test
+@@ -34,7 +34,7 @@ TMPFILE=tmp-tt.pem.$$.tmp
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ echo "Running test for ${ac_cv_sizeof_time_t}-byte time_t"
+ 
+diff --git a/tests/cert-tests/tlsfeature-test b/tests/cert-tests/tlsfeature-test
+index aadbffc26..fb26f6225 100755
+--- a/tests/cert-tests/tlsfeature-test
++++ b/tests/cert-tests/tlsfeature-test
+@@ -34,7 +34,7 @@ export TZ="UTC"
+ 
+ . ${srcdir}/../scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ #
+ # Test certificate generation
+diff --git a/tests/certtool-pkcs11.sh b/tests/certtool-pkcs11.sh
+index 9a599e614..daba535a4 100755
+--- a/tests/certtool-pkcs11.sh
++++ b/tests/certtool-pkcs11.sh
+@@ -68,7 +68,7 @@ exit_error () {
+ 	exit 1
+ }
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # $1: token
+ # $2: PIN
+diff --git a/tests/gnutls-cli-debug.sh b/tests/gnutls-cli-debug.sh
+index 0ab6069b8..335176421 100755
+--- a/tests/gnutls-cli-debug.sh
++++ b/tests/gnutls-cli-debug.sh
+@@ -48,7 +48,7 @@ SERV="${SERV} -q"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ 
+ KEY1=${srcdir}/../doc/credentials/x509/key-rsa.pem
+diff --git a/tests/gnutls-cli-invalid-crl.sh b/tests/gnutls-cli-invalid-crl.sh
+index d7383a555..1a82bfafd 100755
+--- a/tests/gnutls-cli-invalid-crl.sh
++++ b/tests/gnutls-cli-invalid-crl.sh
+@@ -47,7 +47,7 @@ SERV="${SERV} -q"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ echo "Checking whether connecting to a server but with an invalid CRL provided, returns the expected error"
+ 
+diff --git a/tests/gnutls-cli-self-signed.sh b/tests/gnutls-cli-self-signed.sh
+index 07cd5824b..fbb5375bf 100755
+--- a/tests/gnutls-cli-self-signed.sh
++++ b/tests/gnutls-cli-self-signed.sh
+@@ -45,7 +45,7 @@ SERV="${SERV} -q"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ echo "Checking whether connecting to a self signed certificate returns the expected error"
+ 
+diff --git a/tests/ocsp-tests/ocsp-load-chain b/tests/ocsp-tests/ocsp-load-chain
+index 04de48f7e..0822bc3d9 100755
+--- a/tests/ocsp-tests/ocsp-load-chain
++++ b/tests/ocsp-tests/ocsp-load-chain
+@@ -31,7 +31,7 @@ export TZ="UTC"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ datefudge -s "2017-06-19" \
+ 	"${OCSPTOOL}" -e --load-chain "${srcdir}/ocsp-tests/certs/chain-amazon.com.pem" --infile "${srcdir}/ocsp-tests/certs/ocsp-amazon.com.der" --verify-allow-broken
+diff --git a/tests/ocsp-tests/ocsp-must-staple-connection b/tests/ocsp-tests/ocsp-must-staple-connection
+index 490cc032f..49c355dda 100755
+--- a/tests/ocsp-tests/ocsp-must-staple-connection
++++ b/tests/ocsp-tests/ocsp-must-staple-connection
+@@ -53,7 +53,7 @@ fi
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ eval "${GETPORT}"
+ # Port for gnutls-serv
+diff --git a/tests/ocsp-tests/ocsp-test b/tests/ocsp-tests/ocsp-test
+index 373017520..bc2641a22 100755
+--- a/tests/ocsp-tests/ocsp-test
++++ b/tests/ocsp-tests/ocsp-test
+@@ -32,7 +32,7 @@ export TZ="UTC"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # Note that in rare cases this test may fail because the
+ # time set using datefudge could have changed since the generation
+diff --git a/tests/ocsp-tests/ocsp-tls-connection b/tests/ocsp-tests/ocsp-tls-connection
+index bcc77ec2d..870f4ff78 100755
+--- a/tests/ocsp-tests/ocsp-tls-connection
++++ b/tests/ocsp-tests/ocsp-tls-connection
+@@ -54,7 +54,7 @@ export TZ="UTC"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ eval "${GETPORT}"
+ # Port for gnutls-serv
+diff --git a/tests/pkcs7-cat.sh b/tests/pkcs7-cat.sh
+index 2f3b0b0b3..a7a53a431 100755
+--- a/tests/pkcs7-cat.sh
++++ b/tests/pkcs7-cat.sh
+@@ -34,7 +34,7 @@ fi
+ 
+ . ${srcdir}/scripts/common.sh
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ #try verification
+ datefudge -s "2010-10-10" \
+diff --git a/tests/rsa-md5-collision/rsa-md5-collision.sh b/tests/rsa-md5-collision/rsa-md5-collision.sh
+index a935804dc..e319544b7 100755
+--- a/tests/rsa-md5-collision/rsa-md5-collision.sh
++++ b/tests/rsa-md5-collision/rsa-md5-collision.sh
+@@ -31,7 +31,7 @@ if ! test -x "${CERTTOOL}"; then
+ fi
+ 
+ . ${srcdir}/scripts/common.sh
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ # Disable leak detection
+ ASAN_OPTIONS="detect_leaks=0"
+diff --git a/tests/scripts/common.sh b/tests/scripts/common.sh
+index 95f8a5298..6ae19fa58 100644
+--- a/tests/scripts/common.sh
++++ b/tests/scripts/common.sh
+@@ -80,7 +80,12 @@ check_for_datefudge() {
+ 
+ 	TSTAMP=`datefudge -s "2006-09-23" "${top_builddir}/tests/datefudge-check" || true`
+ 	if test "$TSTAMP" != "1158969600" || test "$WINDOWS" = 1; then
+-	echo $TSTAMP
++		return 1
++	fi
++}
++
++skip_if_no_datefudge() {
++	if ! check_for_datefudge; then
+ 		echo "You need datefudge to run this test"
+ 		exit 77
+ 	fi
+diff --git a/tests/server-multi-keys.sh b/tests/server-multi-keys.sh
+index 3138fb688..7737ec9b8 100755
+--- a/tests/server-multi-keys.sh
++++ b/tests/server-multi-keys.sh
+@@ -46,7 +46,7 @@ SERV="${SERV} -q"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ echo "Checking whether server can utilize multiple keys"
+ 
+diff --git a/tests/server-weak-keys.sh b/tests/server-weak-keys.sh
+index 31c51a80b..1fa14711f 100755
+--- a/tests/server-weak-keys.sh
++++ b/tests/server-weak-keys.sh
+@@ -46,7 +46,7 @@ SERV="${SERV} -q"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ echo "Checking whether a client will refuse weak but trusted keys"
+ 
+diff --git a/tests/system-override-profiles.sh b/tests/system-override-profiles.sh
+index 88ec63179..516ce57e7 100755
+--- a/tests/system-override-profiles.sh
++++ b/tests/system-override-profiles.sh
+@@ -41,7 +41,7 @@ fi
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ CERT="${srcdir}/certs/cert-ecc256.pem"
+ KEY="${srcdir}/certs/ecc256.pem"
+diff --git a/tests/system-override-tls.sh b/tests/system-override-tls.sh
+index 6114d7628..54bc190dd 100755
+--- a/tests/system-override-tls.sh
++++ b/tests/system-override-tls.sh
+@@ -40,7 +40,7 @@ fi
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ CERT="${srcdir}/certs/cert-ecc256.pem"
+ KEY="${srcdir}/certs/ecc256.pem"
+diff --git a/tests/tls13/prf-early.sh b/tests/tls13/prf-early.sh
+index b19da4cb6..7f62aba8d 100755
+--- a/tests/tls13/prf-early.sh
++++ b/tests/tls13/prf-early.sh
+@@ -23,7 +23,7 @@ builddir="${builddir:-.}"
+ 
+ . "${srcdir}/scripts/common.sh"
+ 
+-check_for_datefudge
++skip_if_no_datefudge
+ 
+ datefudge -s 2019-04-12 "${builddir}/tls13/prf-early" "$@"
+ exit $?
+-- 
+2.27.0
+
