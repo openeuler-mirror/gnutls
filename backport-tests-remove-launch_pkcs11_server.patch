@@ -1,0 +1,51 @@
+From a7b126acd4793ced574acb68bdbf5c6a48bb4ad5 Mon Sep 17 00:00:00 2001
+From: Daiki Ueno <ueno@gnu.org>
+Date: Wed, 23 Sep 2020 09:34:09 +0200
+Subject: [PATCH] tests: remove launch_pkcs11_server
+
+This function is only used by testpkcs11.sh.
+
+Signed-off-by: Daiki Ueno <ueno@gnu.org>
+---
+ tests/scripts/common.sh | 11 -----------
+ tests/testpkcs11.sh     |  2 +-
+ 2 files changed, 1 insertion(+), 12 deletions(-)
+
+diff --git a/tests/scripts/common.sh b/tests/scripts/common.sh
+index 6ae19fa..5e6f91b 100644
+--- a/tests/scripts/common.sh
++++ b/tests/scripts/common.sh
+@@ -168,17 +168,6 @@ launch_server() {
+ 	${SERV} ${DEBUG} -p "${PORT}" $* >${LOGFILE-/dev/null} &
+ }
+ 
+-launch_pkcs11_server() {
+-	PARENT="$1"
+-	shift
+-	PROVIDER="$1"
+-	shift
+-
+-	wait_for_free_port ${PORT}
+-
+-	${VALGRIND} ${SERV} ${PROVIDER} ${DEBUG} -p "${PORT}" $* &
+-}
+-
+ launch_bare_server() {
+ 	PARENT="$1"
+ 	shift
+diff --git a/tests/testpkcs11.sh b/tests/testpkcs11.sh
+index 9458af2..b69e312 100755
+--- a/tests/testpkcs11.sh
++++ b/tests/testpkcs11.sh
+@@ -900,7 +900,7 @@ use_certificate_test () {
+ 	echo -n "* Using PKCS #11 with gnutls-cli (${txt})... "
+ 	# start server
+ 	eval "${GETPORT}"
+-	launch_pkcs11_server $$ "${ADDITIONAL_PARAM}" --echo --priority NORMAL --x509certfile="${certfile}" \
++	launch_server ${ADDITIONAL_PARAM} --echo --priority NORMAL --x509certfile="${certfile}" \
+ 		--x509keyfile="$keyfile" --x509cafile="${cafile}" \
+ 		--verify-client-cert --require-client-cert >>"${LOGFILE}" 2>&1
+ 
+-- 
+2.27.0
+
