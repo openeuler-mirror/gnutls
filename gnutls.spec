@@ -1,15 +1,16 @@
 Name: gnutls
 Version: 3.6.15
-Release: 1
+Release: 2
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
 URL: https://www.gnutls.org/
 Source0: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz
 Source1: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz.sig
-Patch0: fix-ipv6-handshake-failed.patch
 
-Patch9000: add-skip_if_no_datefudge-to-testpkcs11.sh.patch
+Patch1: fix-ipv6-handshake-failed.patch
+Patch2: backport-tests-remove-launch_pkcs11_server.patch
+Patch3: backport-testpkcs11-use-datefudge-to-trick-certificate-expiry.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -200,6 +201,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Sat Jan 30 2021 lirui <lirui130@huawei.com> - 3.6.15-2
+- backport upsteam patches to fix testpkcs11.sh test failed
+
 * Wed Jan 20 2021 wangchen <wangchen137@huawei.com> - 3.6.15-1
 - update to 3.6.15
 
