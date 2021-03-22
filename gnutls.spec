@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.6.14
-Release: 5
+Release: 6
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -13,6 +13,8 @@ Patch2: handshake-reject-no_renegotiation-alert-if-handshake.patch
 Patch3: backport-tests-check_for_datefudge-don-t-exit-the-test-progra.patch
 Patch4: backport-tests-remove-launch_pkcs11_server.patch
 Patch5: backport-testpkcs11-use-datefudge-to-trick-certificate-expiry.patch
+Patch6: backport-CVE-2021-20231.patch
+Patch7: backport-CVE-2021-20232.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -203,6 +205,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Mon Mar 22 2021 yixiangzhike <zhangxingliang3@huawei.com> - 3.6.14-6
+- fix CVE-2021-20231 CVE-2021-20232
+
 * Sat Jan 30 2021 lirui <lirui130@huawei.com> - 3.6.14-5
 - backport upsteam patches to fix testpkcs11.sh test failed
 
