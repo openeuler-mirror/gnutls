@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.6.15
-Release: 3
+Release: 4
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -13,6 +13,7 @@ Patch2: backport-tests-remove-launch_pkcs11_server.patch
 Patch3: backport-testpkcs11-use-datefudge-to-trick-certificate-expiry.patch
 Patch4: backport-CVE-2021-20231.patch
 Patch5: backport-CVE-2021-20232.patch
+Patch6: backport-remove-init_fds-test.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -203,6 +204,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Fri Jul 30 2021 shangyibin <shangyibin1@huawei.com> - 3.6.15-4
+- remove init_fds test
+
 * Mon Mar 22 2021 yixiangzhike <zhangxingliang3@huawei.com> - 3.6.15-3
 - fix CVE-2021-20231 CVE-2021-20232
 
