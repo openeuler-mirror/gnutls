@@ -1,19 +1,14 @@
 Name: gnutls
-Version: 3.6.15
-Release: 4
+Version: 3.7.2
+Release: 1
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
 URL: https://www.gnutls.org/
-Source0: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz
-Source1: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz.sig
+Source0: https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/%{name}-%{version}.tar.xz
+Source1: https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/%{name}-%{version}.tar.xz.sig
 
 Patch1: fix-ipv6-handshake-failed.patch
-Patch2: backport-tests-remove-launch_pkcs11_server.patch
-Patch3: backport-testpkcs11-use-datefudge-to-trick-certificate-expiry.patch
-Patch4: backport-CVE-2021-20231.patch
-Patch5: backport-CVE-2021-20232.patch
-Patch6: backport-remove-init_fds-test.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -21,7 +16,7 @@ Patch6: backport-remove-init_fds-test.patch
 
 BuildRequires: p11-kit-devel, gettext-devel, zlib-devel, readline-devel
 BuildRequires: libtasn1-devel, libtool, automake, autoconf, texinfo
-BuildRequires: autogen-libopts-devel, autogen, gperf, gnupg2, gcc, gcc-c++
+BuildRequires: autogen-libopts-devel,  gperf, gnupg2, gcc, gcc-c++
 BuildRequires: nettle-devel, trousers-devel, libidn2-devel
 BuildRequires: libunistring-devel, net-tools, softhsm
 BuildRequires: p11-kit-trust, ca-certificates
@@ -77,14 +72,14 @@ Requires: guile
 This package contains Guile bindings for the library.
 %endif
 
-
 %prep
 %autosetup -n %{name}-%{version} -p1
-autoreconf
 
 sed -i -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib|sys_lib_dlsearch_path_spec="/lib /usr/lib %{_libdir}|g' configure
 rm -f lib/minitasn1/*.c lib/minitasn1/*.h
 rm -f src/libopts/*.c src/libopts/*.h src/libopts/compat/*.c src/libopts/compat/*.h
+
+autoreconf
 
 echo "SYSTEM=NORMAL" >> tests/system.prio
 
@@ -204,6 +199,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Fri Sep 17 2021 wuchaochao <wuchaochao4@huawei.com> - 3.7.2-1
+- update package version to 3.7.2  and remove BuildRequires autogen 
+
 * Fri Jul 30 2021 shangyibin <shangyibin1@huawei.com> - 3.6.15-4
 - remove init_fds test
 
