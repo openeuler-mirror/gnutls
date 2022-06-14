@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.7.2
-Release: 1
+Release: 2
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -19,7 +19,7 @@ BuildRequires: libtasn1-devel, libtool, automake, autoconf, texinfo
 BuildRequires: autogen-libopts-devel,  gperf, gnupg2, gcc, gcc-c++
 BuildRequires: nettle-devel, trousers-devel, libidn2-devel
 BuildRequires: libunistring-devel, net-tools, softhsm
-BuildRequires: p11-kit-trust, ca-certificates
+BuildRequires: p11-kit-trust, ca-certificates,gtk-doc,perl
 %if %{with fips}
 BuildRequires: fipscheck
 %endif
@@ -79,7 +79,7 @@ sed -i -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib|sys_lib_dlsearch_path_spe
 rm -f lib/minitasn1/*.c lib/minitasn1/*.h
 rm -f src/libopts/*.c src/libopts/*.h src/libopts/compat/*.c src/libopts/compat/*.h
 
-autoreconf
+autoreconf -fi
 
 echo "SYSTEM=NORMAL" >> tests/system.prio
 
@@ -199,6 +199,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Tue Jun 14 2022 shangyibin <shangyibin1@h-partners.com> - 3.37.2-2
+- fix compile failure
+
 * Fri Sep 17 2021 wuchaochao <wuchaochao4@huawei.com> - 3.7.2-1
 - update package version to 3.7.2  and remove BuildRequires autogen 
 
