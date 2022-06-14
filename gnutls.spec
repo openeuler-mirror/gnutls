@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.7.2
-Release: 2
+Release: 3
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -199,7 +199,10 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
-* Tue Jun 14 2022 shangyibin <shangyibin1@h-partners.com> - 3.37.2-2
+* Tue Jun 14 2022 shangyibin <shangyibin1@h-partners.com> - 3.7.2-3
+- fix changelog
+
+* Tue Jun 14 2022 shangyibin <shangyibin1@h-partners.com> - 3.7.2-2
 - fix compile failure
 
 * Fri Sep 17 2021 wuchaochao <wuchaochao4@huawei.com> - 3.7.2-1
