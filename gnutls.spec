@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.7.2
-Release: 2
+Release: 3
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -9,6 +9,7 @@ Source0: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz
 Source1: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.6/%{name}-%{version}.tar.xz.sig
 
 Patch1: fix-ipv6-handshake-failed.patch
+Patch2: backport-CVE-2022-2509.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -215,6 +216,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Fri Aug 5 2022 dongyuzhen <dongyuzhen@h-partners.com> - 3.7.2-3
+- fix CVE-2022-2509
+
 * Tue Mar 15 2022 liudabo <liudabo1@h-partners.com> - 3.7.2-2
 - detach the sub package gnutls-utils from gnutls
 
