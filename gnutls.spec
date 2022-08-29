@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.6.14
-Release: 8
+Release: 9
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -16,6 +16,7 @@ Patch5: backport-testpkcs11-use-datefudge-to-trick-certificate-expiry.patch
 Patch6: backport-CVE-2021-20231.patch
 Patch7: backport-CVE-2021-20232.patch
 Patch8: backport-CVE-2022-2509.patch
+Patch9: backport-CVE-2021-4209.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -206,6 +207,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Mon Aug 29 2022 yanglongkang <yanglongkang@h-partners.com> - 3.6.14-9
+- fix CVE-2021-4209
+
 * Fri Aug 5 2022 dongyuzhen <dongyuzhen@h-partners.com> - 3.6.14-8
 - fix CVE-2022-2509
 
