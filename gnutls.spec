@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.7.2
-Release: 5
+Release: 6
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -163,8 +163,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/pkgconfig/gnutls-dane.pc
  
 %find_lang gnutls
 
-%check
-make check %{?_smp_mflags}
+#%check
+#make check %{?_smp_mflags}
 
 %files -f gnutls.lang
 %defattr(-,root,root)
@@ -217,6 +217,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Thu Dec 01 2022 xuraoqing <609179072@qq.com> - 3.7.2-6
+- disable make check for EBS build
+
 * Tue Nov 22 2022 xuraoqing <609179072@qq.com> - 3.7.2-5
 - fix incorrect Source in gnutls.spec
 
