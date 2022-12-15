@@ -1,0 +1,123 @@
+diff -Nuar gnutls-3.7.2.org/build-aux/config.guess gnutls-3.7.2.sw/build-aux/config.guess
+--- gnutls-3.7.2.org/build-aux/config.guess	2022-04-08 14:19:41.630000000 +0000
++++ gnutls-3.7.2.sw/build-aux/config.guess	2022-04-08 14:21:05.750000000 +0000
+@@ -938,6 +938,14 @@
+ 	UNAME_MACHINE=aarch64_be
+ 	echo "$UNAME_MACHINE"-unknown-linux-"$LIBC"
+ 	exit ;;
++    sw_64:Linux:*:*)
++	case $(sed -n '/^cpu model/s/^.*: \(.*\)/\1/p' /proc/cpuinfo 2>/dev/null) in
++	  sw)   UNAME_MACHINE=sw_64 ;;
++	esac
++	objdump --private-headers /bin/sh | grep -q ld.so.1
++	if test "$?" = 0 ; then LIBC=gnulibc1 ; fi
++	echo "$UNAME_MACHINE"-sunway-linux-"$LIBC"
++	exit ;;
+     alpha:Linux:*:*)
+ 	case $(sed -n '/^cpu model/s/^.*: \(.*\)/\1/p' /proc/cpuinfo 2>/dev/null) in
+ 	  EV5)   UNAME_MACHINE=alphaev5 ;;
+diff -Nuar gnutls-3.7.2.org/build-aux/config.sub gnutls-3.7.2.sw/build-aux/config.sub
+--- gnutls-3.7.2.org/build-aux/config.sub	2022-04-08 14:19:41.630000000 +0000
++++ gnutls-3.7.2.sw/build-aux/config.sub	2022-04-08 14:21:25.690000000 +0000
+@@ -1160,6 +1160,7 @@
+ 			| a29k \
+ 			| aarch64 | aarch64_be \
+ 			| abacus \
++			| sw_64 \
+ 			| alpha | alphaev[4-8] | alphaev56 | alphaev6[78] \
+ 			| alpha64 | alpha64ev[4-8] | alpha64ev56 | alpha64ev6[78] \
+ 			| alphapca5[67] | alpha64pca5[67] \
+diff -Nuar gnutls-3.7.2.org/configure gnutls-3.7.2.sw/configure
+--- gnutls-3.7.2.org/configure	2022-04-08 14:19:42.150000000 +0000
++++ gnutls-3.7.2.sw/configure	2022-04-08 14:24:41.310000000 +0000
+@@ -8863,6 +8863,12 @@
+   # (according to the test results of Bruno Haible's ieeefp/fenv_default.m4
+   # and the GCC 4.1.2 manual).
+   case "$host_cpu" in
++    sw_64*)
++      if test -n "$GCC"; then
++        # GCC has the option -mieee.
++        CPPFLAGS="$CPPFLAGS -mieee"
++      fi
++      ;;
+     alpha*)
+       # On Alpha systems, a compiler option provides the behaviour.
+       # See the ieee(3) manual page, also available at
+@@ -14191,7 +14197,7 @@
+        case "$gl_cv_host_cpu_c_abi" in
+          i386 | x86_64-x32 | arm | armhf | arm64-ilp32 | hppa | ia64-ilp32 | mips | mipsn32 | powerpc | riscv*-ilp32* | s390 | sparc)
+            gl_cv_host_cpu_c_abi_32bit=yes ;;
+-         x86_64 | alpha | arm64 | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
++         x86_64 | sw_64 | alpha | arm64 | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
+            gl_cv_host_cpu_c_abi_32bit=no ;;
+          *)
+            gl_cv_host_cpu_c_abi_32bit=unknown ;;
+@@ -14220,7 +14226,7 @@
+            ;;
+ 
+          # CPUs that only support a 64-bit ABI.
+-         alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
++         sw_64* | alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
+          | mmix )
+            gl_cv_host_cpu_c_abi_32bit=no
+            ;;
+diff -Nuar gnutls-3.7.2.org/m4/host-cpu-c-abi.m4 gnutls-3.7.2.sw/m4/host-cpu-c-abi.m4
+--- gnutls-3.7.2.org/m4/host-cpu-c-abi.m4	2022-04-08 14:19:42.780000000 +0000
++++ gnutls-3.7.2.sw/m4/host-cpu-c-abi.m4	2022-04-08 14:26:41.970000000 +0000
+@@ -91,6 +91,12 @@
+          ;;
+ 
+ changequote(,)dnl
++       sw_64* )
++changequote([,])dnl
++         gl_cv_host_cpu_c_abi=sw_64
++         ;;
++
++changequote(,)dnl
+        alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] )
+ changequote([,])dnl
+          gl_cv_host_cpu_c_abi=alpha
+@@ -355,6 +361,9 @@
+ #ifndef __x86_64__
+ #undef __x86_64__
+ #endif
++#ifndef __sw_64__
++#undef __sw_64__
++#endif
+ #ifndef __alpha__
+ #undef __alpha__
+ #endif
+@@ -468,7 +477,7 @@
+        case "$gl_cv_host_cpu_c_abi" in
+          i386 | x86_64-x32 | arm | armhf | arm64-ilp32 | hppa | ia64-ilp32 | mips | mipsn32 | powerpc | riscv*-ilp32* | s390 | sparc)
+            gl_cv_host_cpu_c_abi_32bit=yes ;;
+-         x86_64 | alpha | arm64 | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
++         x86_64 | sw_64 | alpha | arm64 | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
+            gl_cv_host_cpu_c_abi_32bit=no ;;
+          *)
+            gl_cv_host_cpu_c_abi_32bit=unknown ;;
+@@ -498,7 +507,7 @@
+ 
+          # CPUs that only support a 64-bit ABI.
+ changequote(,)dnl
+-         alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
++         sw_64* | alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
+          | mmix )
+ changequote([,])dnl
+            gl_cv_host_cpu_c_abi_32bit=no
+diff -Nuar gnutls-3.7.2.org/src/gl/m4/fpieee.m4 gnutls-3.7.2.sw/src/gl/m4/fpieee.m4
+--- gnutls-3.7.2.org/src/gl/m4/fpieee.m4	2022-04-08 14:19:42.800000000 +0000
++++ gnutls-3.7.2.sw/src/gl/m4/fpieee.m4	2022-04-08 14:28:42.820000000 +0000
+@@ -30,6 +30,12 @@
+   # (according to the test results of Bruno Haible's ieeefp/fenv_default.m4
+   # and the GCC 4.1.2 manual).
+   case "$host_cpu" in
++    sw_64*)
++      if test -n "$GCC"; then
++        # GCC has the option -mieee.
++        CPPFLAGS="$CPPFLAGS -mieee"
++      fi
++      ;;
+     alpha*)
+       # On Alpha systems, a compiler option provides the behaviour.
+       # See the ieee(3) manual page, also available at
