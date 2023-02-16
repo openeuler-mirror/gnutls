@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.7.2
-Release: 6
+Release: 7
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -11,6 +11,8 @@ Source1: https://www.gnupg.org/ftp/gcrypt/%{name}/v3.7/%{name}-%{version}.tar.xz
 Patch1: fix-ipv6-handshake-failed.patch
 Patch2: backport-CVE-2022-2509.patch
 Patch3: backport-CVE-2021-4209.patch
+Patch4: backport-01-CVE-2023-0361.patch
+Patch5: backport-02-CVE-2023-0361.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -217,6 +219,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/pkgconfig/gnutls-dane.pc
 %endif
 
 %changelog
+* Thu Feb 16 2023 xuraoqing <609179072@qq.com> - 3.7.2-7
+- fix CVE-2023-0361
+
 * Thu Dec 01 2022 xuraoqing <609179072@qq.com> - 3.7.2-6
 - disable make check for EBS build
 
