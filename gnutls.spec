@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.7.8
-Release: 1
+Release: 2
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -9,6 +9,8 @@ Source0: https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/%{name}-%{version}.tar.xz
 Source1: https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/%{name}-%{version}.tar.xz.sig
 
 Patch1: fix-ipv6-handshake-failed.patch
+Patch2: backport-01-CVE-2023-0361.patch
+Patch3: backport-02-CVE-2023-0361.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -199,6 +201,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Sat Feb 18 2023 xuraoqing <xuraoqing@huawei.com> - 3.7.8-2
+- fix CVE-2023-0361
+
 * Mon Jan 30 2023 xuraoqing <xuraoqing@huawei.com> - 3.7.8-1
 - update to 3.7.8
 
