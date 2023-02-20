@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.6.14
-Release: 10
+Release: 11
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -17,6 +17,8 @@ Patch6: backport-CVE-2021-20231.patch
 Patch7: backport-CVE-2021-20232.patch
 Patch8: backport-CVE-2022-2509.patch
 Patch9: backport-CVE-2021-4209.patch
+Patch10: backport-01-CVE-2023-0361.patch
+Patch11: backport-02-CVE-2023-0361.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -223,6 +225,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Thu Feb 16 2023 xuraoqing <xuraoqing@huawei.com> - 3.6.14-11
+- fix CVE-2023-0361 
+
 * Thu Sep 1 2022 xuraoqing <xuraoqing@huawei.com> - 3.6.14-10
 - Detach the sub package gnutls-utils from gnutls
 
