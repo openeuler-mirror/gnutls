@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.7.2
-Release: 6
+Release: 7
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -12,6 +12,8 @@ Patch1: fix-ipv6-handshake-failed.patch
 Patch2: backport-CVE-2022-2509.patch
 Patch3: backport-CVE-2021-4209.patch
 Patch4: gnutls-3.7.2-sw.patch
+Patch5: backport-01-CVE-2023-0361.patch
+Patch6: backport-02-CVE-2023-0361.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -218,6 +220,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Wed Feb 15 2023 xuraoqing <609179072@qq.com> - 3.7.2-7
+- fix CVE-2023-0361
+
 * Thu Dec 15 2022 zhangzhixin <zhixin.zhang@i-soft.com.cn> - 3.7.2-6
 - Add sw arch patch 
 
