@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.6.14
-Release: 11
+Release: 12
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -19,6 +19,7 @@ Patch8: backport-CVE-2022-2509.patch
 Patch9: backport-CVE-2021-4209.patch
 Patch10: backport-01-CVE-2023-0361.patch
 Patch11: backport-02-CVE-2023-0361.patch
+Patch12: backport-x86-add-detection-of-instruction-set-on-Zhaoxin-CPU.patch
 
 %bcond_without dane
 %bcond_with guile
@@ -225,6 +226,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* MON Feb 27 2023 xuraoqing <xuraoqing@huawei.com> - 3.6.14-12
+- x86 add detection of instruction set on Zhaoxin CPU
+
 * Thu Feb 16 2023 xuraoqing <xuraoqing@huawei.com> - 3.6.14-11
 - fix CVE-2023-0361 
 
