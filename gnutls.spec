@@ -1,6 +1,6 @@
 Name: gnutls
 Version: 3.7.8
-Release: 2
+Release: 3
 Summary: The GNU Secure Communication Protocol Library
 
 License: LGPLv2.1+ and GPLv3+
@@ -89,8 +89,10 @@ echo "SYSTEM=NORMAL" >> tests/system.prio
 # via the crypto policies
 
 %build
-CCASFLAGS="$CCASFLAGS -Wa,--generate-missing-build-notes=yes"
-export CCASFLAGS
+%if "%toolchain" == "gcc"
+  CCASFLAGS="$CCASFLAGS -Wa,--generate-missing-build-notes=yes"
+  export CCASFLAGS
+%endif
 
 # These should be checked by m4/guile.m4 instead of configure.ac
 # taking into account of _guile_suffix
@@ -201,6 +203,9 @@ make check %{?_smp_mflags}
 %endif
 
 %changelog
+* Wed Apr 26 2023 Xiaoya Huang <huangxiaoya@iscas.ac.cn> - 3.7.8-3
+- Fix clang build error
+
 * Wed Feb 15 2023 xuraoqing <xuraoqing@huawei.com> - 3.7.8-2
 - fix CVE-2023-0361
 
